@@ -2,13 +2,38 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences # type: ignore
 import numpy as np
 import pickle
+import os
+import tensorflow as tf
+
+# Load the model
+model = tf.keras.models.load_model('model_1_de.h5')
+
+# Modify the model to remove the time_major argument
+for layer in model.layers:
+    if isinstance(layer, tf.keras.layers.LSTM):
+        config = layer.get_config()
+        if 'time_major' in config:
+            del config['time_major']
+        new_layer = tf.keras.layers.LSTM.from_config(config)
+        model._layers[layer.name] = new_layer
+
+# Save the modified model
+model.save('model_1_de_fixed.h5')
+# Oración de prueba
+# Check current working directory
+print("Current working directory:", os.getcwd())
 
 # Oración de prueba
 # Carga el modelo
-model = tf.keras.models.load_model('out/model_1_de.h5')
-with open('out/tokenizer_es_def.pickle', 'rb') as handle:
+try:
+    model = tf.keras.models.load_model('model_1_de.h5')
+except FileNotFoundError as e:
+    print(f"Error: {e}")
+    print("Please ensure the file 'model_1_de.h5' exists in the directory:", os.getcwd())
+    raise
+with open('tokenizer_es_def.pickle', 'rb') as handle:
     tokenizer_es = pickle.load(handle)
-with open('out/tokenizer_mathml_def.pickle', 'rb') as handle:
+with open('tokenizer_mathml_def.pickle', 'rb') as handle:
     tokenizer_mathml = pickle.load(handle)
 print("Loaded tokenizer from disk")
 max_length_seq = 70

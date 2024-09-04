@@ -39,7 +39,7 @@ app.layout = html.Div([
 )
 def update_output(n_clicks, value):
     if n_clicks > 0 and value:
-        prediction =" inferencia(value)"
+        prediction = 'predict.inferencia(value)'
         return html.Div([
             html.H4('Prediction:', style={'color': '#2C3E50'}),
             html.Pre(prediction, style={'white-space': 'pre-wrap', 'word-wrap': 'break-word', 'background-color': '#F8F9F9', 'padding': '10px', 'border-radius': '5px', 'border': '1px solid #D5DBDB'})
